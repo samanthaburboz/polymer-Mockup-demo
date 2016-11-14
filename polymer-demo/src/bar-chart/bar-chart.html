@@ -1,0 +1,196 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<script src="http://code.highcharts.com/adapters/standalone-framework.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+ 
+
+ <dom-module id="bar-chart">
+        <template>
+            <div id="scontainer" style="max-width: 600px; height: 360px;"></div> 
+		</template>
+
+        <script>
+		var options;
+		 Polymer({
+            is: "bar-chart",
+			properties: {
+			chartNameVal: {
+			type: String,
+			value:'column'
+			},
+			chart: {
+			type: String,
+			value:'column'
+			},
+		
+			yExample:{
+			type: String,
+			notify:true,
+			
+			},
+			xDropdownSelection:{
+			type: String,
+			notify:true,
+			observer:"_chartTypeChange"
+				},
+			xRefreshRate:{
+			type: String,
+			notify:true,
+			observer:"_refereshRateChange"
+				},
+			xGraphData:{
+			type:String,
+			notify:true,
+			observer:"_chartInputChange"
+			},
+			 xTimeSpan: {
+             type: String,
+             notify: true,
+			 observer:"_timeSpanChange"
+                },
+			
+				},
+            attached: function () {
+			var chartOptions=this.getChart();
+			this.chart = new Highcharts.Chart(chartOptions);
+          },
+		  getData:function(){
+		  var data=[{
+                    name: 'Open',
+                     data: [
+                [Date.UTC(2016, 10, 14), 2.41],
+                [Date.UTC(2016, 10, 9), 1.66],
+                [Date.UTC(2016,10,5), 1.8],
+                [Date.UTC(2016, 9, 25), 1.76],
+                [Date.UTC(2016, 9, 20), 2.62],
+                [Date.UTC(2016, 8, 19), 2.41],
+                [Date.UTC(2016, 8, 3), 2.05],
+                [Date.UTC(2016, 7, 14), 1.7],
+                [Date.UTC(2016, 6, 4), 1.1],
+                [Date.UTC(2016, 5, 10), 0]
+				]
+                },
+				{
+                    name: 'Awating',
+                               data: [
+                [Date.UTC(2016, 10, 11), 2.41],
+                [Date.UTC(2016, 10, 5), 1.66],
+                [Date.UTC(2016,9, 27), 1.8],
+                [Date.UTC(2016, 9, 9), 1.76],
+                [Date.UTC(2016, 8, 5), 2.62],
+                [Date.UTC(2016, 5, 12), 2.41],
+                [Date.UTC(2016, 4, 27), 2.05],
+                [Date.UTC(2016, 4, 4), 1.7],
+                [Date.UTC(2016, 3, 4), 1.1],
+                [Date.UTC(2016, 2, 10), 0]
+				]
+                },
+				{
+                    name: 'Closed',
+                               data: [
+                [Date.UTC(2016, 10, 8), 2.41],
+                [Date.UTC(2016, 10, 1), 1.66],
+                [Date.UTC(2016, 9, 20), 1.8],
+                [Date.UTC(2016, 9, 9), 1.76],
+                [Date.UTC(2016, 8, 5), 2.62],
+                [Date.UTC(2016, 7, 19), 2.41],
+                [Date.UTC(2016, 6, 3), 2.05],
+                [Date.UTC(2016, 5, 14), 1.7],
+                [Date.UTC(2016, 4, 4), 1.1],
+                [Date.UTC(2016, 3, 10), 0]
+				]
+                }];
+				return data;
+		  
+		  },
+		  getChart:function(seriesData){
+		  if(seriesData==undefined){
+			var seriesData=this.getData();
+			}else{
+			var seriesData=seriesData;
+			}
+		   options ={
+             chart: {
+					renderTo: 'scontainer',
+                    type: this.xDropdownSelection,
+					backgroundColor:'white'
+                },
+			legend: {
+					align: 'top',
+					verticalAlign: 'top',
+					layout: 'horizontal',
+					x: 200,
+					y: 10
+				},
+            xAxis: {
+					type: 'datetime',
+					dateTimeLabelFormats: {
+					day: '%d %b %Y'
+					},
+             },
+            yAxis: {
+                    title: {
+                        text: 'Defects'
+                    }
+                },
+			plotOptions: {
+					column: {
+					pointPadding: 0,
+					borderWidth: 0,
+					groupPadding: 0.1,
+					//pointStart: Date.UTC(2016, 5, 12), // feb 12, 2016
+					pointInterval: 24 * 3600 * 1000 
+            }},
+		   series: seriesData	
+            }
+		  return options;
+		  },
+		  _chartInputChange:function(){
+			  var inputdata=this.xGraphData;
+		  },
+		  _refereshRateChange:function(){
+			window.clearInterval(timer);			
+			  var self = this;
+			  var intervalTime=self.xRefreshRate*1000*3600;
+			  var timer = setInterval(function(){
+			   console.log(intervalTime);
+			  var filteredData=self.filterData();
+			  var chartData=self.getChart(filteredData);
+			  this.chart = new Highcharts.Chart(chartData);			
+			},intervalTime);
+
+		 
+		  },
+
+		  _timeSpanChange:function(){
+			  var filteredData=this.filterData();
+			  var chartData=this.getChart(filteredData);
+			  this.chart = new Highcharts.Chart(chartData);
+			  var timeSpan=this.xTimeSpan;
+		  },
+		   filterData: function() {
+			  var timedata=this.getData();
+			for(var i = 0;i<timedata.length;i++){
+				var result = timedata[i].data.filter(this.accordingToTime, {time:this.xTimeSpan});   
+				timedata[i].data = result;
+				}  
+       
+        return timedata;  
+		},
+		   accordingToTime : function(e){
+			var value = this.time*7;
+			var startdate = new Date();
+		
+			startdate.setDate(startdate.getDate() - value);
+			date1 = Date.UTC(startdate.getFullYear(),startdate.getMonth(),startdate.getDate());
+			if(date1<=e[0] && e[0]<=new Date()){
+				return true;
+			}
+			
+		},
+		  _chartTypeChange: function() {
+			 var inputdata=this.xGraphData;
+			 options.chart.type = this.xDropdownSelection;
+			 this.chart = new Highcharts.Chart(options);
+				}
+        });
+        </script>

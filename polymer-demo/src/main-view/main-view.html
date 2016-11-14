@@ -1,0 +1,32 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="/src/my-firstlist/highlight-behavior.html">
+<link rel="import" href="/bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="/bower_components/app-layout/app-header-layout/app-header-layout.html">
+
+<link rel="import" href="/src/bar-chart/bar-chart.html">
+
+<dom-module id="main-view">
+  <template>
+   
+<div><div>
+      <div><bar-chart ></bar-chart></div>
+	  
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'main-view',
+	  listeners:{
+	  'chart-type':'chartName'
+	  },
+	   chartName: function(e,value) {
+	  alert("mainView");
+		this.nameChart=value.chart;
+		//this.fire('chart-typemain',{'chartMain':this.nameChart});
+      }
+
+	  
+    });
+  </script>
+</dom-module>

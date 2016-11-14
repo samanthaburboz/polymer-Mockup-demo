@@ -1,0 +1,152 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="/bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="/bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="/bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="/bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="/src/bar-chart/bar-chart.html">
+<link rel="import" href="/src/bar-chart/bar-chart.html">
+<link rel="import" href="/src/main-view/main-view.html">
+<link rel="import" href="/src/main-heading.html">
+<link rel="import" href="/src/drawer-view/drawer-view.html">
+
+<style is="custom-style">
+    <!-- body {
+        margin: 0;
+        font-family: 'Roboto', 'Noto', sans-serif;
+        background-color: #eee;
+    }
+    
+    --><!-- app-toolbar {
+        background-color: #4285f4;
+        color: #fff;
+    }
+    
+    -->
+</style>
+<dom-module id="main-frame">
+    <template>
+   <app-drawer-layout> 
+    <app-drawer align="right" >
+		<drawer-view dropdown-selection="{{dropdownSelection}}" graph-data="{{graphData}}" refresh-rate="{{refreshRate}}" time-span="{{timeSpan}}"></drawer-view>
+	</app-drawer>
+	<app-header-layout>
+
+     <app-header>
+        <app-toolbar>
+          <paper-icon-button icon="menu"></paper-icon-button>
+          <div>{{nameTitle}}</div>
+        </app-toolbar>
+     </app-header>
+   
+	</app-header-layout>
+  <bar-chart x-dropdown-selection={{xDropdownSelection}} x-graph-data="{{xGraphData}}" x-refresh-rate="{{xRefreshRate}}" x-time-span="{{xTimeSpan}}"></bar-chart>
+   
+		<div hidden="{{!toogleFlag}}">toggle element{{nameChart}}</div>
+	
+
+  </app-drawer-layout>
+
+  </template>
+
+    <script>
+        Polymer({
+            is: 'main-frame',
+
+            properties: {
+                toogleFlag: {
+                    type: Boolean,
+                    value: false
+                },
+                xselection: {
+                    type: String,
+                    notify: true
+                },
+
+                xExample: {
+                    type: String,
+                    //notify:true,
+                    //observer:'_xitemchange'
+                },
+                yExample: {
+                    type: String,
+                    //notify:true
+                },
+                dropdownSelection: {
+                    type: String,
+                    notify: true,
+                    observer: '_xitemchange'
+                },
+                xDropdownSelection: {
+                    type: String,
+                    notify: true
+                },
+                graphData: {
+                    type: String,
+                    notify: true,
+                    observer: '_xdatachange'
+                },
+                xGraphData: {
+                    type: String,
+                    notify: true
+                },
+                refreshRate: {
+                    type: String,
+                    notify: true,
+                    observer: '_xRefreshRatechange'
+                },
+                xRefreshRate: {
+                    type: String,
+                    notify: true
+                },
+				timeSpan:{
+					type: String,
+                  notify: true,
+                  observer: '_xTimeSpanchange'
+				},
+				 xTimeSpan: {
+                    type: String,
+                    notify: true
+                },
+				
+            },
+
+            listeners: {
+                'name-event': 'changeName',
+                'toggle-value': 'hideElement',
+                'chart-type': 'chartName'
+            },
+            changeName: function(e, value) {
+                this.nameTitle = value.name;
+            },
+            hideElement: function(e, value) {
+                this.toogleFlag = value.isChecked;
+            },
+            chartName: function(e, value) {
+               
+                this.nameChart = value.chart;
+                var childElement = Polymer.dom(this.root).querySelector('bar-chart');
+                childElement.fire('event-two', e.detail);
+            },
+            _xitemchange: function() {
+               
+                this.xDropdownSelection = this.dropdownSelection;
+            },
+            _xdatachange: function() {
+                this.xGraphData = this.graphData;
+            },
+            _xRefreshRatechange: function() {
+				
+                this.xRefreshRate = this.refreshRate;
+            },
+			_xTimeSpanchange: function() {
+				
+                this.xTimeSpan = this.timeSpan;
+            }
+
+
+        });
+    </script>
+</dom-module>

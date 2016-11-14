@@ -1,0 +1,7 @@
+{
+  "name": "my-list",
+  "short_name": "my-list",
+  "description": "l",
+  "start_url": "/",
+  "display": "standalone"
+}

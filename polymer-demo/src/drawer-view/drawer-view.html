@@ -1,0 +1,125 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="/bower_components/paper-item/paper-item.html">
+<link rel="import" href="/bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="/bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="/bower_components/paper-input/paper-input.html">
+<link rel="import" href="/bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="/bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="/bower_components/paper-toggle-button/paper-toggle-button.html">
+
+
+<dom-module id="drawer-view">
+    <template>
+<style>
+:host{
+display:block;
+}
+#drawerMenu{
+		list-style:none;
+		margin-right: 28px;
+	} 
+</style>
+    
+     	  <ul id="drawerMenu">
+		<li>Title<paper-input value="{{titleName}}" id="mainTitle"></li>
+		
+		<li><paper-dropdown-menu label="Select Chart">
+				<paper-listbox attr-for-selected="value" selected="{{dropdownSelection}}" class="dropdown-content">
+					<paper-item value="column">Bar Chart</paper-item>
+					<paper-item value="pie">Pie Chart</paper-item> 
+					<paper-item value="bar">Basic Bar</paper-item> 
+				</paper-listbox>
+			</paper-dropdown-menu>
+		</li>
+		<li><paper-dropdown-menu label="Time Span">
+				<paper-listbox attr-for-selected="valuess" selected="{{timeSpan}}" class="dropdown-content">
+					<paper-item valuess=1>1 Weeks</paper-item>
+					<paper-item valuess=2>2 weeks</paper-item>
+					<paper-item valuess=4>4 weeks</paper-item> 
+					<paper-item valuess=8>8 weeks</paper-item> 
+				</paper-listbox> 
+			</paper-dropdown-menu>
+		</li>
+		<li><paper-dropdown-menu label="Refresh Rate">
+				<paper-listbox attr-for-selected="values" selected="{{refreshRate}}" class="dropdown-content">
+					<paper-item values=1>1 hrs</paper-item>
+					<paper-item values=2>2 hrs</paper-item>
+					<paper-item values=3>3 hrs</paper-item> 					
+				</paper-listbox> 
+			</paper-dropdown-menu>
+		</li>
+		</ul>
+		<span>Data</span>
+		<hr>
+		<paper-textarea value="{{graphData}}" label="Primary Data Item"></paper-textarea>
+		<hr>
+		<span>Group By</span>
+		<hr>
+		<paper-textarea label="Secondary Data Item"></paper-textarea>
+		<span>Settings</span>
+		<hr>
+		<paper-toggle-button checked="{{check}}">Drilldown</paper-toggle-button>
+    
+  </template>
+    <div>hello</div>
+    <script>
+        Polymer({
+            is: 'drawer-view',
+            properties: {
+                titleName: {
+                    type: String,
+                    observer: 'nameChanged'
+                },
+                check: {
+                    type: Boolean,
+                    observer: 'toggleCheck'
+                },
+                xExample: {
+                    type: String,
+                    value: "samantha",
+                    notify: true
+                },
+                dropdownSelection: {
+                    type: String,
+                    notify: true
+                },
+                refreshRate: {
+                    type: String,
+                    notify: true
+                },
+                graphData: {
+                    type: String,
+                    notify: true
+                },
+				timeSpan:{
+					type: String,
+                    notify: true
+				}
+            },
+            nameChanged: function() {
+                this.fire('name-event', {
+                    'name': this.titleName
+                });
+            },
+            selectedChartType: function() {
+                     this.fire('chart-type', {
+                    'chart': this.yselection
+                });
+            },
+            toggleCheck: function() {
+                this.fire('toggle-value', {
+                    'isChecked': this.check
+                });
+            },
+            _changeValue: function() {
+                console.log('child');
+                this.xExample = "samantha Burboz";
+            },
+            ready: function() {
+                this.name = "PieChart";
+            }
+        });
+    </script>
+</dom-module>
